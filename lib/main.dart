@@ -298,7 +298,6 @@ class DashboardScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tarjeta de bienvenida
           Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
@@ -482,7 +481,7 @@ class _InfoCard extends StatelessWidget {
 
 
 // ============================================
-// COMPONENTES DEL DASHBOARD (sin cambios)
+// COMPONENTES DEL DASHBOARD 
 // ============================================
 class _StatusSummaryCard extends StatelessWidget {
   final double currentHumidity;
