@@ -20,8 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     // Datos de prueba
-    _emailController.text = 'test@test.com';
-    _passwordController.text = '123456';
+    _emailController.text = '';
+    _passwordController.text = '';
   }
   
   @override
@@ -43,14 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('¡Login exitoso!'),
+          content: Text('¡Bienvenido!'),
           backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
         ),
       );
       
-      // Navegar a home
-      // Navigator.pushReplacementNamed(context, '/home');
-      print('Navegaría a home screen');
+      // 🎯 Redirigir a HomeScreen (que tiene el Dashboard)
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
   

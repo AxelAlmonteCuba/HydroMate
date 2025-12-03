@@ -246,9 +246,12 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   void _logout() {
+    // Limpiar el estado del usuario
+    context.read<AuthProvider>().logout();
+    
+    // Navegar al login
     Navigator.pushReplacementNamed(context, '/login');
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

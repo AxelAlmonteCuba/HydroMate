@@ -17,7 +17,7 @@ class LocalDataSource {
     
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // ⚠️ Incrementa a 2
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE users(
@@ -28,7 +28,28 @@ class LocalDataSource {
           )
         ''');
         
-        print('✅ Tabla "users" creada');
+        // 🆕 Tabla de contraseñas
+        await db.execute('''
+          CREATE TABLE passwords(
+            user_id TEXT PRIMARY KEY,
+            password_hash TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+          )
+        ''');
+        
+        print('✅ Tablas creadas');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE passwords(
+              user_id TEXT PRIMARY KEY,
+              password_hash TEXT NOT NULL,
+              FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+          ''');
+          print('✅ Tabla passwords agregada');
+        }
       },
     );
   }
@@ -77,5 +98,30 @@ class LocalDataSource {
     final db = await database;
     final maps = await db.query('users');
     return maps.map((map) => User.fromMap(map)).toList();
+  }
+
+  // Guardar contraseña
+  Future<void> insertPassword(String userId, String password) async {
+    final db = await database;
+    await db.insert(
+      'passwords',
+      {
+        'user_id': userId,
+        'password_hash': password,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('🔐 Contraseña guardada para user: $userId');
+  }
+
+  // Verificar contraseña
+  Future<bool> verifyPassword(String userId, String password) async {
+    final db = await database;
+    final maps = await db.query(
+      'passwords',
+      where: 'user_id = ? AND password_hash = ?',
+      whereArgs: [userId, password],
+    );
+    return maps.isNotEmpty;
   }
 }
