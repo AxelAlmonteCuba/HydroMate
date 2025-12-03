@@ -2,19 +2,24 @@
 // lib/main.dart
 // ============================================
 import 'package:flutter/material.dart';
+import 'package:hydro_mate/features/auth/data/repository/auth_repository.dart';
 import 'package:provider/provider.dart';
 
 // Repositories
 import 'features/irrigation_history/data/repositories/irrigation_history_repository.dart';
 import 'features/operation_mode/data/repositories/operation_mode_repository.dart';
+import 'features/auth/data/datasources/local_datasources.dart';
 
 // Providers
 import 'features/irrigation_history/presentation/providers/irrigation_history_provider.dart';
 import 'features/operation_mode/presentation/providers/operation_mode_provider.dart';
+import 'features/auth/presentation/provider/auth_provider.dart';
 
 // Screens
 import 'features/irrigation_history/presentation/screens/irrigation_history_screen.dart';
 import 'features/operation_mode/presentation/screens/operation_mode_screen.dart';
+import 'features/auth/presentation/screen/login_screen.dart';
+import 'features/auth/presentation/screen/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,6 +32,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+          // AGREGAR ESTE PRIMERO:
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(AuthRepository(LocalDataSource())),
+        ),
         ChangeNotifierProvider(
           create: (_) => IrrigationHistoryProvider(IrrigationHistoryRepository()),
         ),
@@ -46,7 +55,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/login',
         routes: {
-          '/login': (context) => const LoginScreen(),
+          '/login': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
           '/home': (context) => const HomeScreen(),
           '/history': (context) => const IrrigationHistoryScreen(),
           '/operation': (context) => const OperationModeScreen(),
@@ -59,162 +69,162 @@ class MyApp extends StatelessWidget {
 // =============
 // LOGIN SCREEN 
 // =============
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+// class LoginScreen extends StatefulWidget {
+//   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
+//   @override
+//   State<LoginScreen> createState() => _LoginScreenState();
+// }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _userController = TextEditingController(text: "admin");
-  final _passwordController = TextEditingController(text: "1234");
-  final _formKey = GlobalKey<FormState>();
+// class _LoginScreenState extends State<LoginScreen> {
+//   final _userController = TextEditingController(text: "admin");
+//   final _passwordController = TextEditingController(text: "1234");
+//   final _formKey = GlobalKey<FormState>();
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      final username = _userController.text.trim();
-      final password = _passwordController.text.trim();
+//   void _login() {
+//     if (_formKey.currentState!.validate()) {
+//       final username = _userController.text.trim();
+//       final password = _passwordController.text.trim();
 
-      if (username == "admin" && password == "1234") {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuario o contraseña incorrectos')),
-        );
-      }
-    }
-  }
+//       if (username == "admin" && password == "1234") {
+//         Navigator.pushReplacementNamed(context, '/home');
+//       } else {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           const SnackBar(content: Text('Usuario o contraseña incorrectos')),
+//         );
+//       }
+//     }
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF2196F3), Color(0xFF4CAF50)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: Card(
-            elevation: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Icono principal
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.water_drop_rounded,
-                        size: 64,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         decoration: const BoxDecoration(
+//           gradient: LinearGradient(
+//             colors: [Color(0xFF2196F3), Color(0xFF4CAF50)],
+//             begin: Alignment.topLeft,
+//             end: Alignment.bottomRight,
+//           ),
+//         ),
+//         child: Center(
+//           child: Card(
+//             elevation: 8,
+//             margin: const EdgeInsets.symmetric(horizontal: 24),
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(20),
+//             ),
+//             child: Padding(
+//               padding: const EdgeInsets.all(24),
+//               child: Form(
+//                 key: _formKey,
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     // Icono principal
+//                     Container(
+//                       padding: const EdgeInsets.all(16),
+//                       decoration: BoxDecoration(
+//                         color: Colors.blue.withOpacity(0.1),
+//                         shape: BoxShape.circle,
+//                       ),
+//                       child: const Icon(
+//                         Icons.water_drop_rounded,
+//                         size: 64,
+//                         color: Colors.blue,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 16),
 
-                    const Text(
-                      'Sistema de Riego IoT',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
+//                     const Text(
+//                       'Sistema de Riego IoT',
+//                       style: TextStyle(
+//                         fontSize: 24,
+//                         fontWeight: FontWeight.bold,
+//                         color: Colors.black87,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 24),
 
-                    // Campo usuario
-                    TextFormField(
-                      controller: _userController,
-                      decoration: InputDecoration(
-                        labelText: 'Usuario',
-                        prefixIcon: const Icon(Icons.person),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Ingrese un usuario'
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
+//                     // Campo usuario
+//                     TextFormField(
+//                       controller: _userController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Usuario',
+//                         prefixIcon: const Icon(Icons.person),
+//                         filled: true,
+//                         fillColor: Colors.grey[100],
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       validator: (value) => value == null || value.isEmpty
+//                           ? 'Ingrese un usuario'
+//                           : null,
+//                     ),
+//                     const SizedBox(height: 16),
 
-                    // Campo contraseña
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        prefixIcon: const Icon(Icons.lock),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Ingrese una contraseña'
-                          : null,
-                    ),
-                    const SizedBox(height: 24),
+//                     // Campo contraseña
+//                     TextFormField(
+//                       controller: _passwordController,
+//                       obscureText: true,
+//                       decoration: InputDecoration(
+//                         labelText: 'Contraseña',
+//                         prefixIcon: const Icon(Icons.lock),
+//                         filled: true,
+//                         fillColor: Colors.grey[100],
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       validator: (value) => value == null || value.isEmpty
+//                           ? 'Ingrese una contraseña'
+//                           : null,
+//                     ),
+//                     const SizedBox(height: 24),
 
-                    // Botón de login
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14),
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 4,
-                        ),
-                        onPressed: _login,
-                        icon: const Icon(Icons.login, color: Colors.white),
-                        label: const Text(
-                          'Ingresar',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Versión 1.0',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//                     // Botón de login
+//                     SizedBox(
+//                       width: double.infinity,
+//                       child: ElevatedButton.icon(
+//                         style: ElevatedButton.styleFrom(
+//                           padding: const EdgeInsets.symmetric(
+//                               horizontal: 24, vertical: 14),
+//                           backgroundColor: Colors.blue,
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           elevation: 4,
+//                         ),
+//                         onPressed: _login,
+//                         icon: const Icon(Icons.login, color: Colors.white),
+//                         label: const Text(
+//                           'Ingresar',
+//                           style: TextStyle(
+//                               color: Colors.white,
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.bold),
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(height: 16),
+//                     Text(
+//                       'Versión 1.0',
+//                       style: TextStyle(
+//                         color: Colors.grey[600],
+//                         fontSize: 12,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 // ============================================
 // PANTALLA PRINCIPAL
